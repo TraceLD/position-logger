@@ -77,7 +77,7 @@ object Plg : IPlgMod {
     }
 
     override fun getPlayerLocations(): List<PlayerLocation> {
-        val currentTime = Instant.now().epochSecond;
+        val currentTime = Instant.now().epochSecond
         val players = _minecraftServer.playerList.players
         val locations = players.map {
             PlayerLocation(currentTime, it.uuid, it.name.string, it.x, it.y, it.z)
