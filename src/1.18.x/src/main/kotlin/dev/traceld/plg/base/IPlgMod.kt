@@ -4,8 +4,9 @@ import java.nio.file.Path
 
 interface IPlgMod {
     val configDir: Path
+    val configFileName: String
     val configLocation: Path
-        get() = configDir.resolve("plg_config.txt")
+        get() = configDir.resolve(configFileName)
 
     fun getPlayerLocations(): List<PlayerLocation>
 }
