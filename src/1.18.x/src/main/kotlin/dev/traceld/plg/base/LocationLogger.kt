@@ -5,7 +5,7 @@ import java.io.File
 class LocationLogger(private val _fileLoc: String) {
     @Synchronized
     fun writeLocations(csvLocationsLines: List<String>) {
-        val csvStr = csvLocationsLines.joinToString("\n")
+        val csvStr = csvLocationsLines.joinToString()
 
         File(_fileLoc).appendText(csvStr)
     }
@@ -15,7 +15,7 @@ class LocationLogger(private val _fileLoc: String) {
         val file = File(_fileLoc)
 
         if (!file.exists()) {
-            file.writeText("Timestamp, UUID, Name, X, Y, Z")
+            file.writeText("Timestamp,UUID,Name,X,Y,Z\n")
         }
     }
 }

@@ -11,5 +11,5 @@ data class PlayerLocation(
     val z: Double
 ){
     val csvLine
-        get() = "$timestamp, $uuid, $name, $x, $y, $z"
+        get() = "$timestamp, $uuid, $name, $x, $y, $z\n"
 }
