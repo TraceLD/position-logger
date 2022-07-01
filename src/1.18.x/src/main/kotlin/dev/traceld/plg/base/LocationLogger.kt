@@ -9,4 +9,13 @@ class LocationLogger(private val _fileLoc: String) {
 
         File(_fileLoc).appendText(csvStr)
     }
+
+    @Synchronized
+    fun prepareLog() {
+        val file = File(_fileLoc)
+
+        if (!file.exists()) {
+            file.writeText("Timestamp, UUID, Name, X, Y, Z")
+        }
+    }
 }
