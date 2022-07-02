@@ -6,7 +6,7 @@ loaderVersion="[3,)" # Require at least 3.x
 license='LGPL'
 
 [[mods]]
-modId="7472616365_plg"
+modId="plg7472616365"
 version="${file.jarVersion}"
 displayName="7472616365_plg"
 credits="Classified"
