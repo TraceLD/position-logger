@@ -20,4 +20,8 @@ class PlgTicker(private val _impl: IPlgMod, private val _interval: Int, private 
             }
         }
     }
+
+    fun dispose() {
+        _executor.shutdown()
+    }
 }
