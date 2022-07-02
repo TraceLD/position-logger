@@ -54,7 +54,6 @@ object Plg : IPlgMod {
         runWhenOn(Dist.DEDICATED_SERVER, toRun = {
             MOD_BUS.addListener(::setup)
             FORGE_BUS.addListener(::onServerSetup)
-            FORGE_BUS.addListener(::onShutdown)
             FORGE_BUS.addListener(::onServerTick)
         })
     }
@@ -90,12 +89,6 @@ object Plg : IPlgMod {
         if (ev.phase == TickEvent.Phase.START) {
             _ticker.onTickStart()
         }
-    }
-
-    private fun onShutdown(ev: ServerStoppedEvent) {
-        _ticker.dispose()
-
-        LOGGER.info("Disposed ticker.")
     }
 
     override fun getPlayerLocations(): List<PlayerLocation> {
