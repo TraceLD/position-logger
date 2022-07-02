@@ -9,7 +9,7 @@ class LocationLogger(private val _fileLoc: String) {
             return
         }
 
-        val csvStr = csvLocationsLines.joinToString()
+        val csvStr = csvLocationsLines.joinToString("", "", "")
 
         File(_fileLoc).appendText(csvStr)
     }
