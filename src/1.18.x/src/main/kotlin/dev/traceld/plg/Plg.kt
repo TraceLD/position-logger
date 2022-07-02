@@ -11,15 +11,20 @@ import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.event.TickEvent
 import net.minecraftforge.event.TickEvent.ServerTickEvent
 import net.minecraftforge.event.server.ServerStartedEvent
+import net.minecraftforge.event.server.ServerStoppedEvent
+import net.minecraftforge.event.server.ServerStoppingEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import net.minecraftforge.fml.loading.FMLPaths
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.forge.runWhenOn
 import java.nio.file.Path
 import java.time.Instant
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Main mod class. Should be an `object` declaration annotated with `@Mod`.
@@ -30,7 +35,7 @@ import java.time.Instant
  */
 @Mod(Plg.ID)
 object Plg : IPlgMod {
-    const val ID = "7472616365_plg"
+    const val ID = "plg7472616365"
 
     // the logger for our mod
     val LOGGER: Logger = LogManager.getLogger(ID)
@@ -47,9 +52,10 @@ object Plg : IPlgMod {
 
     init {
         runWhenOn(Dist.DEDICATED_SERVER, toRun = {
-            MOD_BUS.addListener(this::setup)
-            MOD_BUS.addListener(this::onServerSetup)
-            MOD_BUS.addListener(this::onServerTick)
+            MOD_BUS.addListener(::setup)
+            FORGE_BUS.addListener(::onServerSetup)
+            FORGE_BUS.addListener(::onShutdown)
+            FORGE_BUS.addListener(::onServerTick)
         })
     }
 
@@ -59,21 +65,37 @@ object Plg : IPlgMod {
     private fun setup(ev: FMLCommonSetupEvent) {
         val configReader = PlgJsonConfigReader()
 
+        LOGGER.info("Loading config...")
+
         _config = configReader.read(configLocation)
         _locationLogger = LocationLogger(_config.logLocation)
 
+        LOGGER.info("Config loaded successfully.")
+
+        LOGGER.info("Preparing logger...")
+
         _locationLogger.prepareLog()
+
+        LOGGER.info("Prepared logger.")
     }
 
     private fun onServerSetup(ev: ServerStartedEvent) {
         _minecraftServer = ev.server
         _ticker = PlgTicker(this, _config.interval, _locationLogger)
+
+        LOGGER.info("Ticker has been set up.")
     }
 
     private fun onServerTick(ev: ServerTickEvent) {
         if (ev.phase == TickEvent.Phase.START) {
             _ticker.onTickStart()
         }
+    }
+
+    private fun onShutdown(ev: ServerStoppedEvent) {
+        _ticker.dispose()
+
+        LOGGER.info("Disposed ticker.")
     }
 
     override fun getPlayerLocations(): List<PlayerLocation> {
