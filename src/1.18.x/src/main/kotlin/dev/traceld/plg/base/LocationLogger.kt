@@ -5,6 +5,10 @@ import java.io.File
 class LocationLogger(private val _fileLoc: String) {
     @Synchronized
     fun writeLocations(csvLocationsLines: List<String>) {
+        if (csvLocationsLines.isEmpty()) {
+            return
+        }
+
         val csvStr = csvLocationsLines.joinToString()
 
         File(_fileLoc).appendText(csvStr)
